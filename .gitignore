@@ -1,2 +1,7 @@
-# Board API
 COURSE.md
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.ruff_cache/
