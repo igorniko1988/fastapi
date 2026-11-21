@@ -13,6 +13,21 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pre-commit>=4.7.0",
     "ruff>=0.17.6",
 ]
 
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # стиль PEP 8
+    "F",        # настоящие ошибки: неиспользуемые импорты, необъявленные имена
+    "I",        # сортировка импортов
+    "UP",       # современный синтаксис (list[int] вместо List[int])
+    "B",        # частые ловушки (bugbear)
+    "SIM",      # упрощение кода
+    "N",        # имена по PEP 8
+]
