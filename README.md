@@ -1,3 +1,3 @@
 # BOARD API
 
-# FastAPI
+# FastAPI project
