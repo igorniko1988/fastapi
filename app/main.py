@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(title="Board Api", version="1.0", description="This is Board Api")
 
 
 @app.get("/health")
