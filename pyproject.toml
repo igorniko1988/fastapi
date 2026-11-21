@@ -7,5 +7,7 @@ authors = [
     { name = "igornikolisen", email = "igor.nikolishen@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "fastapi[standard]>=0.165.0",
+]
 
