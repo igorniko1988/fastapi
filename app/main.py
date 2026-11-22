@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
@@ -30,8 +30,17 @@ projects = {
 
 
 @app.get("/projects")
-def get_projects():
-    return list(projects.values())
+def get_projects(
+    search: str | None = None,
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    result = list(projects.values())
+
+    if search:
+        result = [b for b in result if search.lower() in b["name"].lower()]
+
+    return result[offset : offset + limit]
 
 
 @app.get("/projects/{project_id}", status_code=200)
