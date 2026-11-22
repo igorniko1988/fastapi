@@ -1,9 +1,17 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query
 
+from app.projects.exceptions import ProjectNotFoundError
 from app.projects.schemas import ProjectCreate, ProjectUpdate
 from app.projects.storage import projects
 
 router = APIRouter(prefix="/projects", tags=["projects"])
+
+
+def get_project_or_404(project_id: int):
+    project = projects.get(project_id)
+    if not project:
+        raise ProjectNotFoundError(project_id)
+    return project
 
 
 @router.get("")
@@ -22,10 +30,7 @@ def get_projects(
 
 @router.get("/{project_id}", status_code=200)
 def get_project_by_id(project_id: int):
-    project = projects.get(project_id)
-    if not project:
-        raise HTTPException(404, "No such project")
-    return project
+    return get_project_or_404(project_id)
 
 
 @router.post("", status_code=201)
@@ -38,15 +43,12 @@ def create_project(project: ProjectCreate):
 
 @router.delete("/{project_id}", status_code=204)
 def cancel_project(project_id: int):
-    canceled_project = projects.pop(project_id, None)
-    if not canceled_project:
-        raise HTTPException(404, "No such project")
+    get_project_or_404(project_id)
+    del projects[project_id]
 
 
 @router.patch("/{project_id}", status_code=200)
 def update_project(project_id: int, project_update: ProjectUpdate):
-    project = projects.get(project_id)
-    if not project:
-        raise HTTPException(404, "No such project")
+    project = get_project_or_404(project_id)
     project.update(project_update.model_dump(exclude_unset=True))
     return project
