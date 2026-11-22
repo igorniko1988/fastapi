@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 
-from app.schemas.projectcreate import ProjectCreate, ProjectUpdate
+from app.schemas.project import ProjectCreate, ProjectUpdate
 
 APP_NAME = "Board API"
 APP_VERSION = "0.1.0"
@@ -62,5 +62,5 @@ def update_project(project_id: int, project_update: ProjectUpdate):
     project = projects.get(project_id)
     if not project:
         raise HTTPException(404, "No such project")
-    projects.update(**project_update.model_dump(exclude_unset=True))
-    return projects[project_id]
+    project.update(project_update.model_dump(exclude_unset=True))
+    return project
