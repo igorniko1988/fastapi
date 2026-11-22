@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 
+from app.schemas.project import ProjectCreate, ProjectUpdate
+
 APP_NAME = "Board API"
 APP_VERSION = "0.1.0"
 
@@ -41,13 +43,9 @@ def get_project_by_id(project_id: int):
 
 
 @app.post("/projects", status_code=201)
-def create_project():
+def create_project(project: ProjectCreate):
     new_id = max(projects) + 1
-    data = {
-        "id": new_id,
-        "name": f"project_{new_id}",
-        "description": "example_value",
-    }
+    data = {"id": new_id, **project.model_dump()}
     projects[new_id] = data
     return data
 
@@ -60,9 +58,9 @@ def cancel_project(project_id: int):
 
 
 @app.patch("/projects/{project_id}", status_code=200)
-def update_project(project_id: int, new_name):
+def update_project(project_id: int, project_update: ProjectUpdate):
     project = projects.get(project_id)
     if not project:
         raise HTTPException(404, "No such project")
-    projects[project_id]["name"] = new_name
-    return projects[project_id]
+    project.update(project_update.model_dump(exclude_unset=True))
+    return project
